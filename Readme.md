@@ -1,142 +1,101 @@
+Issue Tracker App
+This is a full-stack web application designed to help teams and individuals track issues, bugs, and tasks. It provides a simple, modern interface for creating, viewing, and managing issues.
 
-# README.md
+✨ Features
+User Authentication: Secure signup and login functionality.
 
-A minimal, full-stack issue tracker built with Next.js, Prisma, and SQLite.
+Issue Creation: Authenticated users can create new issues with a title and description.
 
-## Features
+Issue Listing: View all issues in a clean, filterable list.
 
-- **Authentication:** User signup and login with JWT stored in an HTTP-only cookie.
-- **RBAC:** Differentiates between 'USER' and 'ADMIN' roles.
-  - **ADMIN:** Can create, read, update, and delete any issue or comment.
-  - **USER:** Can create, read, update, and delete only their own issues.
-- **API Routes:**
-  - `GET /api/issues`: List issues with optional pagination and filtering by status.
-  - `POST /api/issues`: Create a new issue.
-  - `GET /api/issues/[id]`: Get a single issue.
-  - `PUT /api/issues/[id]`: Update an issue.
-  - `DELETE /api/issues/[id]`: Delete an issue.
-  - `POST /api/issues/[id]/comments`: Add a comment to an issue.
-- **Frontend:**
-  - List issues on the homepage.
-  - Filter issues by "open" or "closed" status.
-  - Create and edit issues.
-  - Add comments to issues.
-  - Optimistic UI for creating and closing issues for a fast user experience.
+Full-Stack Architecture: A robust backend handles data persistence and API routes, while a fast and responsive frontend provides a great user experience.
 
-## Setup
+💻 Technologies Used
+This project is built using a modern JavaScript stack.
 
-1.  **Clone the repository and install dependencies:**
-    ```bash
-    # Create the directory structure from the top of the code block.
-    # Then, navigate into the project folder.
-    npm install
-    ```
+Frontend:
 
-2.  **Set up the database:**
-    This project uses **Prisma** with a **SQLite** database, which is a file-based database. This means you don't need to install a separate database server.
+Next.js: A React framework for building server-side rendered and static websites.
 
-    ```bash
-    # This command creates the database file and applies the schema.
-    npx prisma migrate dev --name init
-    ```
+React: A JavaScript library for building user interfaces.
 
-3.  **Seed the database:**
-    This will create a sample admin and user, plus some issues for testing.
+Tailwind CSS: A utility-first CSS framework for rapid UI development.
 
-    ```bash
-    npx prisma db seed
-    ```
-    - **Admin account:** email: `admin@example.com`, password: `password123`
-    - **Regular user account:** email: `user@example.com`, password: `password123`
+Backend:
 
-4.  **Run the application:**
-    ```bash
-    npm run dev
-    ```
-    The app will be accessible at `http://localhost:3000`.
+Express.js: A minimal and flexible Node.js web application framework.
 
-## Database Schema (Prisma)
+Prisma: A modern database toolkit for ORMs (Object-Relational Mapping).
 
-This is the schema that defines our data models and relationships.
+SQLite: A lightweight, file-based database for local development.
 
-```prisma
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
+🚀 Getting Started
+Follow these steps to get the project up and running on your local machine.
 
-generator client {
-  provider = "prisma-client-js"
-}
+Prerequisites
+Node.js (v18 or higher)
 
-model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  role      Role      @default(USER)
-  issues    Issue[]
-  comments  Comment[]
-}
+npm (v8 or higher) or yarn
 
-model Issue {
-  id        String    @id @default(uuid())
-  title     String
-  body      String
-  status    Status    @default(OPEN)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
-  comments  Comment[]
-}
+Git
 
-model Comment {
-  id        String   @id @default(uuid())
-  text      String
-  createdAt DateTime @default(now())
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
-  issueId   String
-}
+1. Clone the Repository
+Clone this repository to your local machine:
 
-enum Role {
-  USER
-  ADMIN
-}
+git clone https://github.com/YOUR_USERNAME/Issue-Tracker-App.git
+cd Issue-Tracker-App
 
-enum Status {
-  OPEN
-  CLOSED
-}
-```
+2. Install Dependencies
+Install the necessary npm packages for both the frontend and backend.
 
-## Example cURL Commands
+# Install backend dependencies (for the Express.js server)
+npm install
 
-Replace `[JWT_TOKEN]` with the token you receive after a successful login.
+# Navigate to the Next.js frontend directory
+cd issue-tracker-nextjs
 
-1.  **Login as admin:**
-    ```bash
-    curl -X POST -H "Content-Type: application/json" \
-      -d '{"email":"admin@example.com", "password":"password123"}' \
-      http://localhost:3000/api/auth/login
-    ```
+# Install frontend dependencies
+npm install
 
-2.  **Create a new issue (as logged-in user):**
-    ```bash
-    curl -X POST -H "Content-Type: application/json" \
-      -H "Cookie: token=[JWT_TOKEN]" \
-      -d '{"title":"New Issue Title", "body":"The issue description."}' \
-      http://localhost:3000/api/issues
-    ```
+# Navigate back to the root
+cd ..
 
-3.  **List all issues with filtering:**
-    ```bash
-    # List all issues
-    curl http://localhost:3000/api/issues
+3. Set Up the Database
+Set up your database using Prisma. This will create the dev.db file and the necessary tables.
 
-    # List only open issues
-    curl http://localhost:3000/api/issues?status=open&page=1&page_size=10
-    ```
+# Generate Prisma client and migrate the database schema
+npx prisma migrate dev --name init
 
----
+# Seed the database with some initial data
+npx prisma db seed
+
+4. Run the Servers
+You will need to run the backend and frontend servers in two separate terminal windows.
+
+Terminal 1 (Backend):
+
+# Start the Express.js backend server
+node server.js
+
+Terminal 2 (Frontend):
+
+# Start the Next.js frontend server
+npm run dev
+
+Your application should now be running at http://localhost:3000.
+
+📂 Project Structure
+issue-tracker-nextjs/: The Next.js frontend application.
+
+pages/: The Next.js routes and pages.
+
+components/: Reusable React components.
+
+prisma/: Contains the Prisma schema, migrations, and seed file.
+
+server.js: The entry point for the Express.js backend API.
+
+package.json: Project dependencies and scripts.
+
+👋 Contributing
+Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
