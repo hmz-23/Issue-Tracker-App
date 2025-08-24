@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Notifications with Full Auth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-lg mt-10">
+        <!-- Header -->
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Issue #123</h1>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Comments</h2>
+            <span id="status" class="text-sm font-medium px-2 py-1 rounded-full text-white"></span>
+        </div>
+
+        <!-- Comments List -->
+        <div class="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto mb-4 border border-gray-200">
+            <ul id="comments-list" class="space-y-4">
+                <!-- Comments will be dynamically added here -->
+            </ul>
+        </div>
+
+        <!-- Registration & Login Forms -->
+        <div id="auth-forms">
+            <!-- Registration Form -->
+            <div id="register-form" class="flex flex-col space-y-4 mb-6">
+                <h3 class="text-xl font-semibold text-center text-gray-700">Register</h3>
+                <input type="text" id="reg-username" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="Choose a username...">
+                <input type="password" id="reg-password" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="Choose a password...">
+                <button id="register-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Register
+                </button>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="flex flex-col space-y-4">
+                <h3 class="text-xl font-semibold text-center text-gray-700">Login</h3>
+                <input type="text" id="login-username" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="Enter your username...">
+                <input type="password" id="login-password" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="Enter your password...">
+                <button id="login-btn" class="w-full bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    Login
+                </button>
+            </div>
+        </div>
+
+        <!-- Comment Input Form -->
+        <div id="comment-form" class="flex flex-col space-y-4 hidden">
+            <h3 id="current-user" class="text-lg font-medium text-center text-gray-700"></h3>
+            <textarea id="comment-text" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" rows="3" placeholder="Add a new comment..."></textarea>
+            <button id="add-comment-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Add Comment
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const commentsList = document.getElementById('comments-list');
+            const commentTextarea = document.getElementById('comment-text');
+            const addCommentBtn = document.getElementById('add-comment-btn');
+            const statusSpan = document.getElementById('status');
+            const regUsernameInput = document.getElementById('reg-username');
+            const regPasswordInput = document.getElementById('reg-password');
+            const registerBtn = document.getElementById('register-btn');
+            const loginUsernameInput = document.getElementById('login-username');
+            const loginPasswordInput = document.getElementById('login-password');
+            const loginBtn = document.getElementById('login-btn');
+            const authForms = document.getElementById('auth-forms');
+            const commentForm = document.getElementById('comment-form');
+            const currentUserSpan = document.getElementById('current-user');
+
+            let ws;
+            let reconnectInterval = 1000;
+            const maxReconnectInterval = 32000;
+            const issueId = '123';
+            let userToken = '';
+            let currentUsername = '';
+
+            const updateStatus = (message, colorClass) => {
+                statusSpan.textContent = message;
+                statusSpan.className = `text-sm font-medium px-2 py-1 rounded-full text-white ${colorClass}`;
+            };
+
+            const connectWebSocket = () => {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const url = `${protocol}//${window.location.host}`;
+                ws = new WebSocket(url);
+
+                updateStatus('Connecting...', 'bg-gray-500');
+
+                ws.onopen = () => {
+                    console.log('WebSocket connected.');
+                    updateStatus('Connected', 'bg-green-500');
+                    reconnectInterval = 1000;
+                };
+
+                ws.onmessage = (event) => {
+                    const message = JSON.parse(event.data);
+                    if (message.type === 'newComment') {
+                        addCommentToUI(message.payload);
+                    } else if (message.type === 'initialComments') {
+                        commentsList.innerHTML = '';
+                        message.payload.forEach(comment => addCommentToUI(comment));
+                    }
+                };
+
+                ws.onclose = (event) => {
+                    console.warn('WebSocket disconnected. Reason:', event.reason);
+                    updateStatus('Disconnected', 'bg-red-500');
+                    
+                    setTimeout(() => {
+                        console.log('Attempting to reconnect...');
+                        connectWebSocket();
+                    }, reconnectInterval);
+                    
+                    reconnectInterval = Math.min(reconnectInterval * 2, maxReconnectInterval);
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    ws.close();
+                };
+            };
+
+            const addCommentToUI = (comment) => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-white rounded-lg shadow-sm border border-gray-100';
+                li.innerHTML = `
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="font-bold text-gray-900">${comment.author}</span>
+                        <span class="text-xs text-gray-500">${new Date(comment.id).toLocaleString()}</span>
+                    </div>
+                    <p class="text-gray-700">${comment.text}</p>
+                `;
+                commentsList.appendChild(li);
+                commentsList.scrollTop = commentsList.scrollHeight;
+            };
+
+            // Handle user registration
+            registerBtn.addEventListener('click', async () => {
+                const username = regUsernameInput.value.trim();
+                const password = regPasswordInput.value.trim();
+
+                if (username === '' || password === '') {
+                    alert('Please fill out both fields to register.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const data = await response.json();
+                    alert(data.message); // Show message from server
+                    
+                    if (response.ok) {
+                        regUsernameInput.value = '';
+                        regPasswordInput.value = '';
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    alert('Registration failed due to a network error.');
+                }
+            });
+
+            // Handle user login and get a token
+            loginBtn.addEventListener('click', async () => {
+                const username = loginUsernameInput.value.trim();
+                const password = loginPasswordInput.value.trim();
+                if (username === '' || password === '') {
+                    alert('Please enter both username and password.');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        userToken = data.token;
+                        currentUsername = username;
+                        
+                        // Show the comment form and hide the auth forms
+                        authForms.classList.add('hidden');
+                        commentForm.classList.remove('hidden');
+                        currentUserSpan.textContent = `You are logged in as: ${currentUsername}`;
+                        alert('Login successful!');
+                    } else {
+                        alert(data.message); // Show error message from server
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    alert('Login failed due to a network error.');
+                }
+            });
+
+            // Handle comment submission
+            addCommentBtn.addEventListener('click', async () => {
+                const text = commentTextarea.value.trim();
+                if (text === '') return;
+
+                const payload = { issueId, text };
+                
+                try {
+                    const response = await fetch('/comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${userToken}` // Include the token in the header
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        commentTextarea.value = '';
+                    } else {
+                        const data = await response.json();
+                        alert(`Failed to add comment: ${data.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error submitting comment:', error);
+                    alert('Error submitting comment. Please check your connection.');
+                }
+            });
+
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>
+*/
