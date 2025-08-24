@@ -1,6 +1,4 @@
-```
----
-```markdown
+
 # README.md
 
 A minimal, full-stack issue tracker built with Next.js, Prisma, and SQLite.
@@ -140,4 +138,5 @@ Replace `[JWT_TOKEN]` with the token you receive after a successful login.
     # List only open issues
     curl http://localhost:3000/api/issues?status=open&page=1&page_size=10
     ```
+
 ---
