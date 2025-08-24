@@ -1,6 +1,3 @@
-// --- File 1: server.js ---
-// This is the backend server code, now with full registration and login functionality.
-//
 // To run this file, you need to have Node.js installed.
 // 1. Create a new folder for your project.
 // 2. Open a terminal in that folder and run 'npm init -y' to create a package.json file.
@@ -176,4 +173,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Open http://localhost:${PORT} in multiple browser tabs to see real-time updates.`);
+
 });
