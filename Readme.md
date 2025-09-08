@@ -1,4 +1,4 @@
-*Issue Tracker App:
+# Issue Tracker App:
 This is a full-stack web application designed to help teams and individuals track issues, bugs, and tasks. It provides a simple, modern interface for creating, viewing, and managing issues.
 
 ✨ Features
@@ -99,4 +99,5 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
