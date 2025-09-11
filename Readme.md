@@ -42,8 +42,8 @@ Git
 1. Clone the Repository
 Clone this repository to your local machine:
 
-git clone https://github.com/YOUR_USERNAME/Issue-Tracker-App.git
-cd Issue-Tracker-App
+`git clone https://github.com/YOUR_USERNAME/Issue-Tracker-App.git`
+`cd Issue-Tracker-App`
 
 2. Install Dependencies
 Install the necessary npm packages for both the frontend and backend.
@@ -99,6 +99,7 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
 
 
