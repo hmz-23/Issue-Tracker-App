@@ -48,25 +48,25 @@ cd Issue-Tracker-App
 2. Install Dependencies
 Install the necessary npm packages for both the frontend and backend.
 
-# Install backend dependencies (for the Express.js server)
+####  Install backend dependencies (for the Express.js server)
 npm install
 
-# Navigate to the Next.js frontend directory
+####  Navigate to the Next.js frontend directory
 cd issue-tracker-nextjs
 
-# Install frontend dependencies
+####  Install frontend dependencies
 npm install
 
-# Navigate back to the root
+####  Navigate back to the root
 cd ..
 
 3. Set Up the Database
 Set up your database using Prisma. This will create the dev.db file and the necessary tables.
 
-# Generate Prisma client and migrate the database schema
+####  Generate Prisma client and migrate the database schema
 npx prisma migrate dev --name init
 
-# Seed the database with some initial data
+####  Seed the database with some initial data
 npx prisma db seed
 
 4. Run the Servers
@@ -74,12 +74,12 @@ You will need to run the backend and frontend servers in two separate terminal w
 
 Terminal 1 (Backend):
 
-# Start the Express.js backend server
+####  Start the Express.js backend server
 node server.js
 
 Terminal 2 (Frontend):
 
-# Start the Next.js frontend server
+####  Start the Next.js frontend server
 npm run dev
 
 Your application should now be running at http://localhost:3000.
@@ -99,6 +99,7 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
 
 
