@@ -48,7 +48,10 @@ cd Issue-Tracker-App
 Install the necessary npm packages for both the frontend and backend.
 
 #### Install backend dependencies (for the Express.js server)
-`npm install`
+```
+npm install
+```
+
 
 #### Navigate to the Next.js frontend directory
 `cd issue-tracker-nextjs`
@@ -98,6 +101,7 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
 
 
