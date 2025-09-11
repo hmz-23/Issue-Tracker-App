@@ -32,59 +32,58 @@ SQLite: A lightweight, file-based database for local development.
 ## 🚀 Getting Started
 Follow these steps to get the project up and running on your local machine.
 
-Prerequisites
-Node.js (v18 or higher)
+### Prerequisites:
+Node.js (v18 or higher)\
+npm (v8 or higher) or yarn\
+Git\
 
-npm (v8 or higher) or yarn
-
-Git
-
-1. Clone the Repository
+### 1. Clone the Repository
 Clone this repository to your local machine:
+```
+git clone https://github.com/YOUR_USERNAME/Issue-Tracker-App.git
+cd Issue-Tracker-App
+```
 
-`git clone https://github.com/YOUR_USERNAME/Issue-Tracker-App.git`
-`cd Issue-Tracker-App`
-
-2. Install Dependencies
+### 2. Install Dependencies
 Install the necessary npm packages for both the frontend and backend.
 
 ###  Install backend dependencies (for the Express.js server)
-npm install
+`npm install`
 
 ###  Navigate to the Next.js frontend directory
-cd issue-tracker-nextjs
+`cd issue-tracker-nextjs`
 
 ###  Install frontend dependencies
-npm install
+`npm install`
 
 ###  Navigate back to the root
-cd ..
+`cd ..`
 
-3. Set Up the Database
+### 3. Set Up the Database
 Set up your database using Prisma. This will create the dev.db file and the necessary tables.
 
 ###  Generate Prisma client and migrate the database schema
-npx prisma migrate dev --name init
+`npx prisma migrate dev --name init`
 
 ###  Seed the database with some initial data
-npx prisma db seed
+`npx prisma db seed`
 
-4. Run the Servers
+### 4. Run the Servers
 You will need to run the backend and frontend servers in two separate terminal windows.
 
-Terminal 1 (Backend):
+## Terminal 1 (Backend):
 
 ###  Start the Express.js backend server
-node server.js
+`node server.js`
 
-Terminal 2 (Frontend):
+## Terminal 2 (Frontend):
 
 ###  Start the Next.js frontend server
-npm run dev
+`npm run dev`
 
 Your application should now be running at http://localhost:3000.
 
-📂 Project Structure
+## 📂 Project Structure
 issue-tracker-nextjs/: The Next.js frontend application.
 
 pages/: The Next.js routes and pages.
@@ -99,6 +98,7 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
 
 
