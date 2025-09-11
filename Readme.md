@@ -1,7 +1,7 @@
 # Issue Tracker App
 This is a full-stack web application designed to help teams and individuals track issues, bugs, and tasks. It provides a simple, modern interface for creating, viewing, and managing issues.
 
-### ✨ Features
+## ✨ Features
 User Authentication: Secure signup and login functionality.
 
 Issue Creation: Authenticated users can create new issues with a title and description.
@@ -10,10 +10,10 @@ Issue Listing: View all issues in a clean, filterable list.
 
 Full-Stack Architecture: A robust backend handles data persistence and API routes, while a fast and responsive frontend provides a great user experience.
 
-💻 Technologies Used
+## 💻 Technologies Used
 This project is built using a modern JavaScript stack.
 
-Frontend:
+### Frontend:
 
 Next.js: A React framework for building server-side rendered and static websites.
 
@@ -21,7 +21,7 @@ React: A JavaScript library for building user interfaces.
 
 Tailwind CSS: A utility-first CSS framework for rapid UI development.
 
-Backend:
+### Backend:
 
 Express.js: A minimal and flexible Node.js web application framework.
 
@@ -29,7 +29,7 @@ Prisma: A modern database toolkit for ORMs (Object-Relational Mapping).
 
 SQLite: A lightweight, file-based database for local development.
 
-🚀 Getting Started
+## 🚀 Getting Started
 Follow these steps to get the project up and running on your local machine.
 
 Prerequisites
@@ -99,6 +99,7 @@ package.json: Project dependencies and scripts.
 
 👋 Contributing
 Contributions are always welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
 
 
 
